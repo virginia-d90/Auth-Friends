@@ -1,4 +1,5 @@
 import React from 'react';
+import {axiosWithAuth} from '../utils/axiosWithAuth';
 
 class Login extends React.Component {
     state = {
@@ -21,6 +22,14 @@ class Login extends React.Component {
         e.preventDefault();
         //make POST request to send credentials to api
         //navigate user to the protected landing page
+        axiosWithAuth()
+            .post('/api/login', this.state.credentials)
+            .then(res => {
+                window.localStorage.setItem('token', res.data.payload);
+                this.props.history.push('/protected')
+            })
+            .catch(err => console.log(err))
+
     }
 
     render() {
@@ -36,7 +45,7 @@ class Login extends React.Component {
                     />
                     <label>Password</label>
                     <input 
-                        type='text'
+                        type='password'
                         name='password'
                         value={this.state.credentials.password}
                         onChange={this.handleChange}
